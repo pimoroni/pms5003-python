@@ -47,7 +47,7 @@ setup(
     license='MIT',
     keywords='Raspberry Pi',
     url='http://www.pimoroni.com',
-    project_urls={ 'GitHub': 'https://www.github.com/pimoroni/pms5003-python' },
+    project_urls={'GitHub': 'https://www.github.com/pimoroni/pms5003-python'},
     classifiers=classifiers,
     packages=['pms5003'],
     install_requires=[]
