@@ -1,4 +1,4 @@
 [run]
-source = {{LIBNAME}}
+source = pms5003
 omit =
     .tox/*

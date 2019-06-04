@@ -38,17 +38,17 @@ classifiers = ['Development Status :: 4 - Beta',
                'Topic :: System :: Hardware']
 
 setup(
-    name='{{LIBNAME}}',
+    name='pms5003',
     version='0.0.1',
     author='Philip Howard',
     author_email='phil@pimoroni.com',
-    description="""{{DESCRIPTION}}""",
+    description="""PMS5003 Particulate Sensor""",
     long_description=open('README.rst').read() + '\n' + open('CHANGELOG.txt').read(),
     license='MIT',
     keywords='Raspberry Pi',
     url='http://www.pimoroni.com',
-    project_urls={ 'GitHub': 'https://www.github.com/pimoroni/{{LIBNAME}}-python' },
+    project_urls={ 'GitHub': 'https://www.github.com/pimoroni/pms5003-python' },
     classifiers=classifiers,
-    packages=['{{LIBNAME}}'],
+    packages=['pms5003'],
     install_requires=[]
 )
