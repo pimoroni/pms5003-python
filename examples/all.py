@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from pms5003 import PMS5003
 
 print("""all.py - Continously print all data values.

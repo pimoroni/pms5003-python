@@ -65,21 +65,19 @@ class PMS5003Data():
 
     def __repr__(self):
         return """
-        Data01: {} - PM1.0 ug/m3
-        Data02: {} - PM2.5 ug/m3 - combustion particles, organic compounds and metals
-        Data03: {} - PM10 ug/m3  - dust, pollen and mould spores
-        Data04: {} - PM1.0 ug/m3 (atmos env)
-        Data05: {} - PM2.5 ug/m3 (atmos env)
-        Data06: {} - (atmos env)
-        Data07: {} - > 0.3um in 0.1L air
-        Data08: {} - > 0.5um in 0.1L air
-        Data09: {} - > 1.0um in 0.1L air
-        Data10: {} - > 2.5um in 0.1L air
-        Data11: {} - > 5.0um in 0.1L air
-        Data12: {} - > 10um in 0.1L air
-        Data13: {} - > Reserved
-        Checksum: {} == {checksum}
-        """.format(*self.data, checksum=self.checksum)
+PM1.0 ug/m3 (ultrafine particles):                             {}
+PM2.5 ug/m3 (combustion particles, organic compounds, metals): {}
+PM10 ug/m3  (dust, pollen, mould spores):                      {}
+PM1.0 ug/m3 (atmos env):                                       {}
+PM2.5 ug/m3 (atmos env):                                       {}
+PM10 ug/m3 (atmos env):                                        {}
+>0.3um in 0.1L air:                                            {}
+>0.5um in 0.1L air:                                            {}
+>1.0um in 0.1L air:                                            {}
+>2.5um in 0.1L air:                                            {}
+>5.0um in 0.1L air:                                            {}
+>10um in 0.1L air:                                             {}
+""".format(*self.data[:-2], checksum=self.checksum)
 
     def __str__(self):
         return self.__repr__()
