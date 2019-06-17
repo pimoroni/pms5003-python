@@ -85,17 +85,31 @@ PM10 ug/m3 (atmos env):                                        {}
 
 class PMS5003():
     def __init__(self, device='/dev/ttyAMA0', baudrate=9600, pin_enable=22, pin_reset=27):
+        self._serial = None
+        self._device = device
+        self._baudrate = baudrate
+        self._pin_enable = pin_enable
+        self._pin_reset = pin_reset
+        self.setup()
+
+    def setup(self):
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(pin_enable, GPIO.OUT, initial=GPIO.HIGH)
-        GPIO.setup(pin_reset, GPIO.OUT, initial=GPIO.HIGH)
+        GPIO.setup(self._pin_enable, GPIO.OUT, initial=GPIO.HIGH)
+        GPIO.setup(self._pin_reset, GPIO.OUT, initial=GPIO.HIGH)
 
-        time.sleep(0.1)
-        GPIO.output(pin_reset, GPIO.LOW)
-        time.sleep(0.1)
-        GPIO.output(pin_reset, GPIO.HIGH)
+        self.reset()
 
-        self._serial = serial.Serial(device, baudrate=baudrate, timeout=4)
+        if self._serial is not None:
+            self._serial.close()
+
+        self._serial = serial.Serial(self._device, baudrate=self._baudrate, timeout=4)
+
+    def reset(self):
+        time.sleep(0.1)
+        GPIO.output(self._pin_reset, GPIO.LOW)
+        time.sleep(0.1)
+        GPIO.output(self._pin_reset, GPIO.HIGH)
 
     def read(self):
         start = time.time()
