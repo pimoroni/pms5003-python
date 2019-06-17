@@ -108,6 +108,7 @@ class PMS5003():
     def reset(self):
         time.sleep(0.1)
         GPIO.output(self._pin_reset, GPIO.LOW)
+        self._serial.flushInput()
         time.sleep(0.1)
         GPIO.output(self._pin_reset, GPIO.HIGH)
 
