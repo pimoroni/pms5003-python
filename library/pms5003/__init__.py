@@ -98,12 +98,12 @@ class PMS5003():
         GPIO.setup(self._pin_enable, GPIO.OUT, initial=GPIO.HIGH)
         GPIO.setup(self._pin_reset, GPIO.OUT, initial=GPIO.HIGH)
 
-        self.reset()
-
         if self._serial is not None:
             self._serial.close()
 
         self._serial = serial.Serial(self._device, baudrate=self._baudrate, timeout=4)
+
+        self.reset()
 
     def reset(self):
         time.sleep(0.1)
