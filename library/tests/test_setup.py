@@ -43,6 +43,13 @@ def test_setup():
     del sensor
 
 
+def test_double_setup():
+    _mock()
+    import pms5003
+    sensor = pms5003.PMS5003()
+    sensor.setup()
+
+
 def test_read():
     _mock()
     import pms5003
