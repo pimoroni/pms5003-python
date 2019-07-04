@@ -22,9 +22,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from setuptools import setup
+from setuptools import setup, __version__, version
 
-setup(
+minimum_version = version.pkg_resources.parse_version('30.4.0')
+
+if version.pkg_resources.parse_version(__version__) < minimum_version:
+    raise RuntimeError("Package setuptools must be at least version {}".format(minimum_version))
+
+result = setup(
     packages=['pms5003'],
-    install_requires=['setuptools>=30.4.0', 'pyserial']
+    install_requires=['setuptools>='.format(minimum_version), 'pyserial']
 )
