@@ -50,5 +50,5 @@ setup(
     project_urls={'GitHub': 'https://www.github.com/pimoroni/pms5003-python'},
     classifiers=classifiers,
     packages=['pms5003'],
-    install_requires=[]
+    install_requires=['pyserial']
 )
