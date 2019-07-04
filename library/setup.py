@@ -22,33 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
-
-classifiers = ['Development Status :: 4 - Beta',
-               'Operating System :: POSIX :: Linux',
-               'License :: OSI Approved :: MIT License',
-               'Intended Audience :: Developers',
-               'Programming Language :: Python :: 2.6',
-               'Programming Language :: Python :: 2.7',
-               'Programming Language :: Python :: 3',
-               'Topic :: Software Development',
-               'Topic :: System :: Hardware']
+from setuptools import setup
 
 setup(
-    name='pms5003',
-    version='0.0.2',
-    author='Philip Howard',
-    author_email='phil@pimoroni.com',
-    description="""PMS5003 Particulate Sensor""",
-    long_description=open('README.rst').read() + '\n' + open('CHANGELOG.txt').read(),
-    license='MIT',
-    keywords='Raspberry Pi',
-    url='http://www.pimoroni.com',
-    project_urls={'GitHub': 'https://www.github.com/pimoroni/pms5003-python'},
-    classifiers=classifiers,
     packages=['pms5003'],
-    install_requires=['pyserial']
+    install_requires=['setuptools>=30.4.0', 'pyserial']
 )
