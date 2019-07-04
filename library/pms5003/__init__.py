@@ -4,7 +4,7 @@ import struct
 import time
 
 
-__version__ = '0.0.3'
+__version__ = '0.0.4'
 
 
 PMS5003_SOF = bytearray(b'\x42\x4d')

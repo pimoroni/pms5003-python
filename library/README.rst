@@ -41,6 +41,11 @@ This will switch Bluetooth over to miniUART, see
 https://www.raspberrypi.org/documentation/configuration/uart.md for more
 details.
 
+0.0.4
+-----
+
+* Packaging improvements/bugfix from boilerplate
+
 0.0.3
 -----
 
