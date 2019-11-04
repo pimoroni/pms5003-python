@@ -124,7 +124,7 @@ class PMS5003():
 
             sof = self._serial.read(1)
             if len(sof) == 0:
-                raise SerialTiemoutError("PMS5003 Read Timeout: Failed to read start of frame byte")
+                raise SerialTimeoutError("PMS5003 Read Timeout: Failed to read start of frame byte")
             sof = ord(sof) if type(sof) is bytes else sof
 
             if sof == PMS5003_SOF[sof_index]:
