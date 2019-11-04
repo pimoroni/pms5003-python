@@ -115,24 +115,38 @@ class PMS5003():
     def read(self):
         start = time.time()
 
+        sof_index = 0
+
         while True:
             elapsed = time.time() - start
             if elapsed > 5:
-                raise ReadTimeoutError("PMS5003 Read Timeout")
+                raise ReadTimeoutError("PMS5003 Read Timeout: Could not find start of frame")
 
-            sof = bytearray(self._serial.read(2))
-            if sof == PMS5003_SOF:
-                break
+            sof = self._serial.read(1)
+            if len(sof) == 0:
+                raise SerialTiemoutError("PMS5003 Read Timeout: Failed to read start of frame byte")
+            sof = ord(sof) if type(sof) is bytes else sof
+
+            if sof == PMS5003_SOF[sof_index]:
+                if sof_index == 0:
+                    sof_index = 1
+                elif sof_index == 1:
+                    break
+            else:
+                sof_index = 0
 
         checksum = sum(PMS5003_SOF)
 
         data = bytearray(self._serial.read(2))  # Get frame length packet
         if len(data) != 2:
-            raise SerialTimeoutError("PMS5003 Serial Timeout")
+            raise SerialTimeoutError("PMS5003 Read Timeout: Could not find length packet")
         checksum += sum(data)
         frame_length = struct.unpack(">H", data)[0]
 
         raw_data = bytearray(self._serial.read(frame_length))
+        if len(raw_data) != frame_length:
+            raise SerialTimeoutError("PMS5003 Read Timeout: Invalid frame length. Got {} bytes, expected {}.".format(len(raw_data), frame_length))
+
         data = PMS5003Data(raw_data)
         # Don't include the checksum bytes in the checksum calculation
         checksum += sum(raw_data[:-2])
