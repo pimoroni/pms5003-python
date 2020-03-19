@@ -1,3 +1,11 @@
+0.0.5
+-----
+
+* BugFix: Read start-of-frame a byte at a time to avoid misalignment issues, potential fix for #2, #3 and #4
+* Enhancement: Clarified error message when length packet cannot be read
+* Enhancement: Clarified error message when start of frame cannot be read
+* Enhancement: Added new error message where raw data length is less than expected (frame length)
+
 0.0.4
 -----
 
