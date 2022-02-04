@@ -95,7 +95,7 @@ class PMS5003Data():
         Get the data in the form of influxDB line protocol
         :return: str: the formatted data
         """
-        ret = [f"{meas_name},size={x['size']},environment={'environment'} pm={x['val']}" for x in self.get_all_pm()]
+        ret = [f"{meas_name},size={x['size']},environment={x['environment']} pm={x['val']}" for x in self.get_all_pm()]
         ret.extend([f"{meas_name},size={s} count={c}" for s, c in self.get_all_counts().items()])
         if timestamp:
             ret = [x + f' {self.timestamp}' for x in ret]
