@@ -63,6 +63,25 @@ class PMS5003Data():
 
         raise ValueError("Particle size {} measurement not available.".format(size))
 
+    def get_all_pm(self):
+        """
+        Returns all PM measurements as a list of dicts with keys 'size', 'environment', and 'val' which are the
+        particulate matter size recorded by the measurement, the conditions this was calculated under (atmospheric or
+        standard) and the actual value of the PM measurement in ug/m^3
+
+        :return: list of dicts of measurements
+        """
+        vals = [{'size': x, 'environment': y} for y in ['std', 'atm'] for x in [1.0, 2.5, 10.0]]
+        return [{k: v for d in (x, {'val': y}) for (k, v) in d.items()} for x, y in zip(vals, self.data)]
+
+    def get_all_counts(self):
+        """
+        Returns dict mapping size (float) to number (int) of particles beyond that size in 0.1 L of air.
+        :return: dict: size -> particle count
+        """
+        sizes = [0.3, 0.5, 1.0, 2.5, 5.0, 10.0]
+        return {s: v for s, v in zip(sizes, self.data[6:])}
+
     def __repr__(self):
         return """
 PM1.0 ug/m3 (ultrafine particles):                             {}
@@ -81,6 +100,16 @@ PM10 ug/m3 (atmos env):                                        {}
 
     def __str__(self):
         return self.__repr__()
+
+    def __iter__(self):
+        """
+        Iterator allows conversion of data object into dict for direct access. IE call d = dict(data)
+        :return:
+        """
+        for x in self.get_all_pm():
+            yield "pm{:.1f}_{:s}".format(x['size'], x['environment']), x['val']
+        for size, count in self.get_all_counts().items():
+            yield "count_{:.1f}".format(size), count
 
 
 class PMS5003():
