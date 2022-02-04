@@ -60,6 +60,7 @@ def test_read():
     data.get_all_pm()
     data.get_all_counts()
     dict(data)
+    data.as_influxdb_line_proto()
 
 
 def test_read_fail():

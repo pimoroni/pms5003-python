@@ -23,10 +23,18 @@ class SerialTimeoutError(RuntimeError):
 
 
 class PMS5003Data():
-    def __init__(self, raw_data):
+    def __init__(self, raw_data, timestamp=None):
+        """
+        Object to store the output of the PMS5003 sensor
+        :param raw_data: raw data from the serial output
+        :param timestamp: timestamp in ns of when the data was collected
+        """
         self.raw_data = raw_data
         self.data = struct.unpack(">HHHHHHHHHHHHHH", raw_data)
         self.checksum = self.data[13]
+        if timestamp is None:
+            timestamp = time.time_ns()
+        self.timestamp = timestamp  # The timestamp in ns
 
     def pm_ug_per_m3(self, size, atmospheric_environment=False):
         if atmospheric_environment:
@@ -81,6 +89,17 @@ class PMS5003Data():
         """
         sizes = [0.3, 0.5, 1.0, 2.5, 5.0, 10.0]
         return {s: v for s, v in zip(sizes, self.data[6:])}
+
+    def as_influxdb_line_proto(self, meas_name='pms5003', timestamp=True):
+        """
+        Get the data in the form of influxDB line protocol
+        :return: str: the formatted data
+        """
+        ret = [f"{meas_name},size={x['size']},environment={'environment'} pm={x['val']}" for x in self.get_all_pm()]
+        ret.extend([f"{meas_name},size={s} count={c}" for s, c in self.get_all_counts().items()])
+        if timestamp:
+            ret = [x + f' {self.timestamp}' for x in ret]
+        return '\n'.join(ret)
 
     def __repr__(self):
         return """
