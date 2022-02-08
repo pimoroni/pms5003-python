@@ -27,13 +27,13 @@ class PMS5003Data():
         """
         Object to store the output of the PMS5003 sensor
         :param raw_data: raw data from the serial output
-        :param timestamp: timestamp in ns of when the data was collected
+        :param timestamp: float, seconds since epoch in UTC; timestamp of when data was collected
         """
         self.raw_data = raw_data
         self.data = struct.unpack(">HHHHHHHHHHHHHH", raw_data)
         self.checksum = self.data[13]
         if timestamp is None:
-            timestamp = time.time_ns()
+            timestamp = time.time()
         self.timestamp = timestamp  # The timestamp in ns
 
     def pm_ug_per_m3(self, size, atmospheric_environment=False):
@@ -93,12 +93,16 @@ class PMS5003Data():
     def as_influxdb_line_proto(self, meas_name='pms5003', timestamp=True):
         """
         Get the data in the form of influxDB line protocol
+
+        :param meas_name: str, the name of the measurement as will show up in influxdb
+        :param timestamp: bool, include timestamp in the output or not
         :return: str: the formatted data
         """
-        ret = [f"{meas_name},size={x['size']},environment={x['environment']} pm={x['val']}u" for x in self.get_all_pm()]
-        ret.extend([f"{meas_name},size={s} count={c}u" for s, c in self.get_all_counts().items()])
+        ret = ["{name},size={size},environment={environment} pm={val}u".format(name=meas_name, **x) for x in
+               self.get_all_pm()]
+        ret.extend(["{},size={} count={}u".format(meas_name, s, c) for s, c in self.get_all_counts().items()])
         if timestamp:
-            ret = [x + f' {self.timestamp}' for x in ret]
+            ret = ["{} {}".format(x, int(1e9 * self.timestamp)) for x in ret]
         return '\n'.join(ret)
 
     def __repr__(self):
