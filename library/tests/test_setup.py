@@ -57,6 +57,10 @@ def test_read():
     sensor._serial = MockSerial()
     data = sensor.read()
     data.pm_ug_per_m3(2.5)
+    data.get_all_pm()
+    data.get_all_counts()
+    dict(data)
+    data.as_influxdb_line_proto()
 
 
 def test_read_fail():

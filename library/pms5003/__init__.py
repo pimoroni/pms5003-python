@@ -23,10 +23,18 @@ class SerialTimeoutError(RuntimeError):
 
 
 class PMS5003Data():
-    def __init__(self, raw_data):
+    def __init__(self, raw_data, timestamp=None):
+        """
+        Object to store the output of the PMS5003 sensor
+        :param raw_data: raw data from the serial output
+        :param timestamp: float, seconds since epoch in UTC; timestamp of when data was collected
+        """
         self.raw_data = raw_data
         self.data = struct.unpack(">HHHHHHHHHHHHHH", raw_data)
         self.checksum = self.data[13]
+        if timestamp is None:
+            timestamp = time.time()
+        self.timestamp = timestamp  # The timestamp in ns
 
     def pm_ug_per_m3(self, size, atmospheric_environment=False):
         if atmospheric_environment:
@@ -63,6 +71,40 @@ class PMS5003Data():
 
         raise ValueError("Particle size {} measurement not available.".format(size))
 
+    def get_all_pm(self):
+        """
+        Returns all PM measurements as a list of dicts with keys 'size', 'environment', and 'val' which are the
+        particulate matter size recorded by the measurement, the conditions this was calculated under (atmospheric or
+        standard) and the actual value of the PM measurement in ug/m^3
+
+        :return: list of dicts of measurements
+        """
+        vals = [{'size': x, 'environment': y} for y in ['std', 'atm'] for x in [1.0, 2.5, 10.0]]
+        return [{k: v for d in (x, {'val': y}) for (k, v) in d.items()} for x, y in zip(vals, self.data)]
+
+    def get_all_counts(self):
+        """
+        Returns dict mapping size (float) to number (int) of particles beyond that size in 0.1 L of air.
+        :return: dict: size -> particle count
+        """
+        sizes = [0.3, 0.5, 1.0, 2.5, 5.0, 10.0]
+        return {s: v for s, v in zip(sizes, self.data[6:])}
+
+    def as_influxdb_line_proto(self, meas_name='pms5003', timestamp=True):
+        """
+        Get the data in the form of influxDB line protocol
+
+        :param meas_name: str, the name of the measurement as will show up in influxdb
+        :param timestamp: bool, include timestamp in the output or not
+        :return: str: the formatted data
+        """
+        ret = ["{name},size={size},environment={environment} pm={val}u".format(name=meas_name, **x) for x in
+               self.get_all_pm()]
+        ret.extend(["{},size={} count={}u".format(meas_name, s, c) for s, c in self.get_all_counts().items()])
+        if timestamp:
+            ret = ["{} {}".format(x, int(1e9 * self.timestamp)) for x in ret]
+        return '\n'.join(ret)
+
     def __repr__(self):
         return """
 PM1.0 ug/m3 (ultrafine particles):                             {}
@@ -81,6 +123,16 @@ PM10 ug/m3 (atmos env):                                        {}
 
     def __str__(self):
         return self.__repr__()
+
+    def __iter__(self):
+        """
+        Iterator allows conversion of data object into dict for direct access. IE call d = dict(data)
+        :return:
+        """
+        for x in self.get_all_pm():
+            yield "pm{:.1f}_{:s}".format(x['size'], x['environment']), x['val']
+        for size, count in self.get_all_counts().items():
+            yield "count_{:.1f}".format(size), count
 
 
 class PMS5003():
