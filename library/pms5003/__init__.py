@@ -105,6 +105,15 @@ class PMS5003():
 
         self.reset()
 
+    def sleep(self):
+        '''Turn off enable (SET). This stops the fan, aka sleeping
+           mode. Note this is different than active/passive.'''
+        GPIO.output(self._pin_enable, GPIO.LOW)
+
+    def wake(self):
+        '''Enable (SET). This starts the fan and sensor. Wait 30sec for values.'''
+        GPIO.output(self._pin_enable, GPIO.HIGH)
+
     def reset(self):
         time.sleep(0.1)
         GPIO.output(self._pin_reset, GPIO.LOW)
