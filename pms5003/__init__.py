@@ -1,8 +1,8 @@
-import RPi.GPIO as GPIO
-import serial
 import struct
 import time
 
+import RPi.GPIO as GPIO
+import serial
 
 __version__ = '0.0.5'
 

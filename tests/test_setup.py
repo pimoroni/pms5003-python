@@ -1,7 +1,8 @@
+import struct
 import sys
+
 import mock
 import pytest
-import struct
 
 
 class MockSerialFail():
