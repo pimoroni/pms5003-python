@@ -2,7 +2,7 @@
 
 from pms5003 import PMS5003
 
-print("""all.py - Continously print all data values.
+print("""all.py - Continuously print all data values.
 
 Press Ctrl+C to exit!
 

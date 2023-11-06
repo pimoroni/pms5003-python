@@ -2,7 +2,7 @@
 
 from pms5003 import PMS5003
 
-print("""specific.py - Continously print a specific data value.
+print("""specific.py - Continuously print a specific data value.
 
 Press Ctrl+C to exit!
 
