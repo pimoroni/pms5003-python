@@ -34,7 +34,11 @@ classifiers = [
     "Topic :: Software Development :: Libraries",
     "Topic :: System :: Hardware",
 ]
-dependencies = []
+dependencies = [
+    "gpiod",
+    "gpiodevice",
+    "pyserial"
+]
 
 [project.urls]
 GitHub = "https://www.github.com/pimoroni/pms5003-python"
@@ -111,6 +115,6 @@ ignore = [
 ]
 
 [tool.pimoroni]
-apt_packages = ["python3-rpi.gpio", "python3-smbus"]
+apt_packages = []
 configtxt = []
 commands = []
