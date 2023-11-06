@@ -4,10 +4,10 @@ import time
 import RPi.GPIO as GPIO
 import serial
 
-__version__ = '0.0.5'
+__version__ = "0.0.5"
 
 
-PMS5003_SOF = bytearray(b'\x42\x4d')
+PMS5003_SOF = bytearray(b"\x42\x4d")
 
 
 class ChecksumMismatchError(RuntimeError):
@@ -22,7 +22,7 @@ class SerialTimeoutError(RuntimeError):
     pass
 
 
-class PMS5003Data():
+class PMS5003Data:
     def __init__(self, raw_data):
         self.raw_data = raw_data
         self.data = struct.unpack(">HHHHHHHHHHHHHH", raw_data)
@@ -77,14 +77,16 @@ PM10 ug/m3 (atmos env):                                        {}
 >2.5um in 0.1L air:                                            {}
 >5.0um in 0.1L air:                                            {}
 >10um in 0.1L air:                                             {}
-""".format(*self.data[:-2])
+""".format(
+            *self.data[:-2]
+        )
 
     def __str__(self):
         return self.__repr__()
 
 
-class PMS5003():
-    def __init__(self, device='/dev/ttyAMA0', baudrate=9600, pin_enable=22, pin_reset=27):
+class PMS5003:
+    def __init__(self, device="/dev/ttyAMA0", baudrate=9600, pin_enable=22, pin_reset=27):
         self._serial = None
         self._device = device
         self._baudrate = baudrate
