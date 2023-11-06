@@ -21,7 +21,7 @@ class MockSerial:
         if self.ptr >= len(self.data):
             self.ptr = 0
         return result
-    
+
     def flushInput(self):
         pass
 
@@ -35,7 +35,7 @@ class MockSerialFail(MockSerial):
 
     def read(self, length):
         return b"\x00" * length
-    
+
 
 @pytest.fixture(scope='function', autouse=False)
 def pms5003():
