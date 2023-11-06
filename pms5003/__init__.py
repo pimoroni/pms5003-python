@@ -77,7 +77,7 @@ PM10 ug/m3 (atmos env):                                        {}
 >2.5um in 0.1L air:                                            {}
 >5.0um in 0.1L air:                                            {}
 >10um in 0.1L air:                                             {}
-""".format(*self.data[:-2], checksum=self.checksum)
+""".format(*self.data[:-2])
 
     def __str__(self):
         return self.__repr__()
@@ -125,7 +125,7 @@ class PMS5003():
             sof = self._serial.read(1)
             if len(sof) == 0:
                 raise SerialTimeoutError("PMS5003 Read Timeout: Failed to read start of frame byte")
-            sof = ord(sof) if type(sof) is bytes else sof
+            sof = ord(sof) if isinstance(sof, bytes) else sof
 
             if sof == PMS5003_SOF[sof_index]:
                 if sof_index == 0:
