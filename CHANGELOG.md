@@ -1,3 +1,9 @@
+1.0.0
+-----
+
+* Repackage to hatch/pyproject.toml
+* Port to gpiod/gpiodevice (away from RPi.GPIO)
+
 0.0.5
 -----
 

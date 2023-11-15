@@ -37,7 +37,7 @@ pms5003 = PMS5003(device="/dev/ttyAMA0", baudrate=9600, pin_enable="PIN15", pin_
 try:
     while True:
         data = pms5003.read()
-        print("PM2.5 ug/m3 (combustion particles, organic compounds, metals): {}".format(data.pm_ug_per_m3(2.5)))
+        print(f"PM2.5 ug/m3 (combustion particles, organic compounds, metals): {data.pm_ug_per_m3(2.5)}")
 
 except KeyboardInterrupt:
     pass
