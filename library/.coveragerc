@@ -1,4 +1,0 @@
-[run]
-source = pms5003
-omit =
-    .tox/*

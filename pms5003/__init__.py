@@ -1,13 +1,23 @@
-import RPi.GPIO as GPIO
-import serial
 import struct
 import time
 
+import gpiod
+import gpiodevice
+import serial
+from gpiod.line import Direction, Value
 
-__version__ = '0.0.5'
+__version__ = "1.0.0"
 
 
-PMS5003_SOF = bytearray(b'\x42\x4d')
+PMS5003_SOF = bytearray(b"\x42\x4d")
+
+OUTL = gpiod.LineSettings(direction=Direction.OUTPUT, output_value=Value.INACTIVE)
+OUTH = gpiod.LineSettings(direction=Direction.OUTPUT, output_value=Value.ACTIVE)
+PLATFORMS = {
+    "Radxa ROCK 5B": {"enable": ("PIN_15", OUTH), "reset": ("PIN_13", OUTL)},
+    "Raspberry Pi 5": {"enable": ("PIN15", OUTH), "reset": ("PIN13", OUTL)},
+    "Raspberry Pi 4": {"enable": ("GPIO22", OUTH), "reset": ("GPIO27", OUTL)}
+}
 
 
 class ChecksumMismatchError(RuntimeError):
@@ -22,7 +32,7 @@ class SerialTimeoutError(RuntimeError):
     pass
 
 
-class PMS5003Data():
+class PMS5003Data:
     def __init__(self, raw_data):
         self.raw_data = raw_data
         self.data = struct.unpack(">HHHHHHHHHHHHHH", raw_data)
@@ -77,27 +87,30 @@ PM10 ug/m3 (atmos env):                                        {}
 >2.5um in 0.1L air:                                            {}
 >5.0um in 0.1L air:                                            {}
 >10um in 0.1L air:                                             {}
-""".format(*self.data[:-2], checksum=self.checksum)
+""".format(
+            *self.data[:-2]
+        )
 
     def __str__(self):
         return self.__repr__()
 
 
-class PMS5003():
-    def __init__(self, device='/dev/ttyAMA0', baudrate=9600, pin_enable=22, pin_reset=27):
+class PMS5003:
+    def __init__(self, device="/dev/ttyAMA0", baudrate=9600, pin_enable=None, pin_reset=None):
         self._serial = None
         self._device = device
         self._baudrate = baudrate
-        self._pin_enable = pin_enable
-        self._pin_reset = pin_reset
+
+        if pin_enable is not None and pin_reset is not None:
+            gpiodevice.friendly_errors = True
+            self._pin_enable = gpiodevice.get_pin(pin_enable, "PMS5003_en", OUTH)
+            self._pin_reset = gpiodevice.get_pin(pin_reset, "PMS5003_rst", OUTL)
+        else:
+            self._pin_enable, self._pin_reset = gpiodevice.get_pins_for_platform(PLATFORMS)
+
         self.setup()
 
     def setup(self):
-        GPIO.setwarnings(False)
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(self._pin_enable, GPIO.OUT, initial=GPIO.HIGH)
-        GPIO.setup(self._pin_reset, GPIO.OUT, initial=GPIO.HIGH)
-
         if self._serial is not None:
             self._serial.close()
 
@@ -105,12 +118,16 @@ class PMS5003():
 
         self.reset()
 
+    def set_pin(self, pin, state):
+        lines, offset = pin
+        lines.set_value(offset, Value.ACTIVE if state else Value.INACTIVE)
+
     def reset(self):
         time.sleep(0.1)
-        GPIO.output(self._pin_reset, GPIO.LOW)
+        self.set_pin(self._pin_reset, False)
         self._serial.flushInput()
         time.sleep(0.1)
-        GPIO.output(self._pin_reset, GPIO.HIGH)
+        self.set_pin(self._pin_reset, True)
 
     def read(self):
         start = time.time()
@@ -125,7 +142,7 @@ class PMS5003():
             sof = self._serial.read(1)
             if len(sof) == 0:
                 raise SerialTimeoutError("PMS5003 Read Timeout: Failed to read start of frame byte")
-            sof = ord(sof) if type(sof) is bytes else sof
+            sof = ord(sof) if isinstance(sof, bytes) else sof
 
             if sof == PMS5003_SOF[sof_index]:
                 if sof_index == 0:
