@@ -1,6 +1,6 @@
 # PMS5003 Particulate Sensor
 
-[![Build Status](https://travis-ci.com/pimoroni/pms5003-python.svg?branch=master)](https://travis-ci.com/pimoroni/pms5003-python)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/pimoroni/pms5003-python/test.yml?branch=main)](https://github.com/pimoroni/pms5003-python/actions/workflows/test.yml)
 [![Coverage Status](https://coveralls.io/repos/github/pimoroni/pms5003-python/badge.svg?branch=master)](https://coveralls.io/github/pimoroni/pms5003-python?branch=master)
 [![PyPi Package](https://img.shields.io/pypi/v/pms5003.svg)](https://pypi.python.org/pypi/pms5003)
 [![Python Versions](https://img.shields.io/pypi/pyversions/pms5003.svg)](https://pypi.python.org/pypi/pms5003)
