@@ -13,6 +13,9 @@ Press Ctrl+C to exit!
 # Configure the PMS5003 for Enviro+
 # pins and ports may vary for your hardware!
 
+# Default, try to auto-detect platform
+pms5003 = PMS5003(device="/dev/ttyAMA0", baudrate=9600)
+
 # Raspberry Pi 4 (Raspberry Pi OS)
 # GPIO22 and GPIO27 are enable and reset for Raspberry Pi 4
 # use "raspi-config" to enable serial, or add
@@ -23,7 +26,7 @@ Press Ctrl+C to exit!
 # PIN15 and PIN13 are enable and reset for Raspberry Pi 5
 # use "raspi-config" to enable serial, or add
 # "dtoverlay=uart0-pi5" to /boot/firmware/config.txt
-pms5003 = PMS5003(device="/dev/ttyAMA0", baudrate=9600, pin_enable="PIN15", pin_reset="PIN13")
+# pms5003 = PMS5003(device="/dev/ttyAMA0", baudrate=9600, pin_enable="PIN15", pin_reset="PIN13")
 
 # ROCK 5B
 # Use "armbian-config" to enable rk3568-uart2-m0
