@@ -16,7 +16,8 @@ OUTH = gpiod.LineSettings(direction=Direction.OUTPUT, output_value=Value.ACTIVE)
 PLATFORMS = {
     "Radxa ROCK 5B": {"enable": ("PIN_15", OUTH), "reset": ("PIN_13", OUTL)},
     "Raspberry Pi 5": {"enable": ("PIN15", OUTH), "reset": ("PIN13", OUTL)},
-    "Raspberry Pi 4": {"enable": ("GPIO22", OUTH), "reset": ("GPIO27", OUTL)}
+    "Raspberry Pi 4": {"enable": ("GPIO22", OUTH), "reset": ("GPIO27", OUTL)},
+    "Raspberry Pi Zero W": {"enable": ("GPIO22", OUTH), "reset": ("GPIO27", OUTL)}
 }
 
 
