@@ -13,12 +13,6 @@ PMS5003_SOF = bytearray(b"\x42\x4d")
 
 OUTL = gpiod.LineSettings(direction=Direction.OUTPUT, output_value=Value.INACTIVE)
 OUTH = gpiod.LineSettings(direction=Direction.OUTPUT, output_value=Value.ACTIVE)
-PLATFORMS = {
-    "Radxa ROCK 5B": {"enable": ("PIN_15", OUTH), "reset": ("PIN_13", OUTL)},
-    "Raspberry Pi 5": {"enable": ("PIN15", OUTH), "reset": ("PIN13", OUTL)},
-    "Raspberry Pi 4": {"enable": ("GPIO22", OUTH), "reset": ("GPIO27", OUTL)},
-    "Raspberry Pi Zero W": {"enable": ("GPIO22", OUTH), "reset": ("GPIO27", OUTL)}
-}
 
 
 class ChecksumMismatchError(RuntimeError):
@@ -97,17 +91,14 @@ PM10 ug/m3 (atmos env):                                        {}
 
 
 class PMS5003:
-    def __init__(self, device="/dev/ttyAMA0", baudrate=9600, pin_enable=None, pin_reset=None):
+    def __init__(self, device="/dev/ttyAMA0", baudrate=9600, pin_enable="GPIO22", pin_reset="GPIO27"):
         self._serial = None
         self._device = device
         self._baudrate = baudrate
 
-        if pin_enable is not None and pin_reset is not None:
-            gpiodevice.friendly_errors = True
-            self._pin_enable = gpiodevice.get_pin(pin_enable, "PMS5003_en", OUTH)
-            self._pin_reset = gpiodevice.get_pin(pin_reset, "PMS5003_rst", OUTL)
-        else:
-            self._pin_enable, self._pin_reset = gpiodevice.get_pins_for_platform(PLATFORMS)
+        gpiodevice.friendly_errors = True
+        self._pin_enable = gpiodevice.get_pin(pin_enable, "PMS5003_en", OUTH)
+        self._pin_reset = gpiodevice.get_pin(pin_reset, "PMS5003_rst", OUTL)
 
         self.setup()
 
