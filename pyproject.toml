@@ -117,4 +117,8 @@ ignore = [
 [tool.pimoroni]
 apt_packages = []
 configtxt = []
-commands = []
+commands = [
+	"printf \"Setting up serial for PMS5003..\\n\"",
+	"sudo raspi-config nonint do_serial_cons 1",
+	"sudo raspi-config nonint do_serial_hw 0"
+]
