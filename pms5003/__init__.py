@@ -97,8 +97,14 @@ class PMS5003:
         self._baudrate = baudrate
 
         gpiodevice.friendly_errors = True
-        self._pin_enable = gpiodevice.get_pin(pin_enable, "PMS5003_en", OUTH)
-        self._pin_reset = gpiodevice.get_pin(pin_reset, "PMS5003_rst", OUTL)
+        if isinstance(pin_enable, tuple):
+            self._pin_enable = pin_enable
+        else:
+            self._pin_enable = gpiodevice.get_pin(pin_enable, "PMS5003_en", OUTH)
+        if isinstance(pin_reset, tuple):
+            self._pin_reset = pin_reset
+        else:
+            self._pin_reset = gpiodevice.get_pin(pin_reset, "PMS5003_rst", OUTL)
 
         self.setup()
 
