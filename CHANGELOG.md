@@ -1,3 +1,9 @@
+1.0.1
+-----
+
+* Remove platform detection and default to Pi-compatible pins
+* Support passing in LineRequest and offset for custom pins (supported in gpiodevice>=0.0.4)
+
 1.0.0
 -----
 

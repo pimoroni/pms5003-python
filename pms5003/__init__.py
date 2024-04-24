@@ -6,7 +6,7 @@ import gpiodevice
 import serial
 from gpiod.line import Direction, Value
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 
 PMS5003_SOF = bytearray(b"\x42\x4d")
