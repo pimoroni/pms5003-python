@@ -78,4 +78,3 @@ def serial_fail():
     sys.modules['serial'].Serial = MockSerialFail
     yield sys.modules['serial']
     del sys.modules['serial']
-
