@@ -50,7 +50,7 @@ class PMS5003Data:
             if size == 10:
                 return self.data[2]
 
-        raise ValueError("Particle size {} measurement not available.".format(size))
+        raise ValueError(f"Particle size {size} measurement not available.")
 
     def pm_per_1l_air(self, size):
         if size == 0.3:
@@ -66,7 +66,7 @@ class PMS5003Data:
         if size == 10:
             return self.data[11]
 
-        raise ValueError("Particle size {} measurement not available.".format(size))
+        raise ValueError(f"Particle size {size} measurement not available.")
 
     def __repr__(self):
         return """
@@ -154,13 +154,13 @@ class PMS5003:
 
         raw_data = bytearray(self._serial.read(frame_length))
         if len(raw_data) != frame_length:
-            raise SerialTimeoutError("PMS5003 Read Timeout: Invalid frame length. Got {} bytes, expected {}.".format(len(raw_data), frame_length))
+            raise SerialTimeoutError(f"PMS5003 Read Timeout: Invalid frame length. Got {len(raw_data)} bytes, expected {frame_length}.")
 
         data = PMS5003Data(raw_data)
         # Don't include the checksum bytes in the checksum calculation
         checksum += sum(raw_data[:-2])
 
         if checksum != data.checksum:
-            raise ChecksumMismatchError("PMS5003 Checksum Mismatch {} != {}".format(checksum, data.checksum))
+            raise ChecksumMismatchError(f"PMS5003 Checksum Mismatch {checksum} != {data.checksum}")
 
         return data
