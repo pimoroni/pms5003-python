@@ -1,12 +1,16 @@
 import struct
 import time
+from importlib.metadata import PackageNotFoundError, version
 
 import gpiod
 import gpiodevice
 import serial
 from gpiod.line import Direction, Value
 
-__version__ = "1.0.1"
+try:
+    __version__ = version("pms5003")
+except PackageNotFoundError:
+    __version__ = "0.0.0"
 
 
 PMS5003_SOF = bytearray(b"\x42\x4d")
